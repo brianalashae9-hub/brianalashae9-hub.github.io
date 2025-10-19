@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Which Housewives Franchise Are You?</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #0f172a;
+      --muted: #6b7280;
+      --card: #ffffff;
+      --border: #e5e7eb;
+      --shadow: 0 1px 2px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.05);
+      --accent: #111827;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
+      background: var(--bg);
+    }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 28px 20px 56px; }
+    h1 { font-weight: 800; letter-spacing: -0.02em; margin: 0 0 6px; }
+    h2 { margin: 0 0 10px; }
+    .muted { color: var(--muted); }
+    .pill { display:inline-block; border:1px solid var(--border); border-radius:999px; padding:6px 10px; font-size:12px; margin:4px 6px 0 0; }
+    .card { background: var(--card); border:1px solid var(--border); border-radius:16px; box-shadow: var(--shadow); padding:18px; }
+    .grid { display:grid; gap:18px; }
+    .q { display:grid; gap:10px; }
+    .row { display:flex; align-items:center; gap:12px; }
+    .row label { width:140px; font-weight:600; }
+    input[type=range] { width:100%; }
+    .num { width:44px; text-align:center; border:1px solid var(--border); border-radius:10px; padding:6px 8px; background:#fff; }
+    .btn {
+      cursor:pointer; border:1px solid var(--border); background:#111827; color:#fff; padding:10px 14px;
+      border-radius:10px; font-weight:600;
+    }
+    .btn.secondary { background:#fff; color:#111827; }
+    .bars { display:grid; gap:12px; grid-template-columns: 1fr; }
+    @media (min-width: 800px){ .bars { grid-template-columns: 1fr 1fr; } }
+    .bar { margin-bottom:6px; }
+    .barlabel { display:flex; justify-content:space-between; font-size:14px; margin-bottom:4px; }
+    .track { height:10px; background:#e5e7eb; border-radius:999px; overflow:hidden; }
+    .fill { height:10px; border-radius:999px; }
+    .topline { font-size:20px; font-weight:800; margin-top:4px; }
+    .copylink { font-size:14px; text-decoration:underline; cursor:pointer; }
+    .small { font-size:12px; }
+    .table { width:100%; border-collapse: collapse; font-size:14px; }
+    .table th, .table td { border-top:1px solid var(--border); padding:8px 6px; text-align:left; }
+    .badge { padding:2px 8px; border-radius:999px; border:1px solid var(--border); font-size:12px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Which Housewives Franchise Are You?</h1>
+      <div class="muted">Rate what you care about (1–10). We’ll compute your best-fit using your formula.</div>
+      <div id="franchisePills" style="margin-top:8px;"></div>
+    </header>
+
+    <!-- INPUTS -->
+    <section class="grid" style="margin-top:18px">
+      <div class="card q">
+        <h2>1) Your Priorities</h2>
+        <div class="row"><label for="comedy">Comedy</label>
+          <input id="comedy" type="range" min="1" max="10" value="5" />
+          <input id="comedyNum" class="num" type="number" min="1" max="10" value="5" />
+        </div>
+        <div class="row"><label for="chemistry">Cast Chemistry</label>
+          <input id="chemistry" type="range" min="1" max="10" value="5" />
+          <input id="chemistryNum" class="num" type="number" min="1" max="10" value="5" />
+        </div>
+        <div class="row"><label for="drama">Drama</label>
+          <input id="drama" type="range" min="1" max="10" value="5" />
+          <input id="dramaNum" class="num" type="number" min="1" max="10" value="5" />
+        </div>
+        <div class="row"><label for="xfactor">X-Factor</label>
+          <input id="xfactor" type="range" min="1" max="10" value="5" />
+          <input id="xfactorNum" class="num" type="number" min="1" max="10" value="5" />
+        </div>
+        <div class="row"><label for="fashion">Fashion</label>
+          <input id="fashion" type="range" min="1" max="10" value="5" />
+          <input id="fashionNum" class="num" type="number" min="1" max="10" value="5" />
+        </div>
+        <div class="row"><label for="lifestyle">Lifestyle</label>
+          <input id="lifestyle" type="range" min="1" max="10" value="5" />
+          <input id="lifestyleNum" class="num" type="number" min="1" max="10" value="5" />
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:6px;">
+          <button id="resetBtn" class="btn secondary">Reset to 5s</button>
+          <button id="shareBtn" class="btn secondary">Copy Share Link</button>
+        </div>
+        <div class="small muted">Tip: the share link encodes your slider values so others can see your scores.</div>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h2>Results</h2>
+          <span class="small muted">Scores are weighted 1–10 (higher = better fit)</span>
+        </div>
+        <div id="headline" class="topline">Adjust the sliders to see your match.</div>
+        <div id="subcopy" class="muted" style="margin:6px 0 12px 0;"></div>
+
+        <div id="bars" class="bars" style="margin-top:8px"></div>
+
+        <h3 style="margin-top:16px">Top 3</h3>
+        <table class="table" id="top3"></table>
+      </div>
+    </section>
+
+    <footer class="muted small" style="margin-top:18px">
+      Admin note: weights mirror your RH franchises table. Want 0–10 instead of 1–10? See “NORMALIZE_ZERO_TO_TEN” in the code.
+    </footer>
+  </div>
+
+  <script>
+    // ======= DATA =======
+    const FRANCHISES = [
+      { key: "atl",   label: "RHOA (Atlanta)",     color: "#F97316",
+        blurb: "Quick-witted shade, loyalty tests, and boss energy." },
+      { key: "nyc",   label: "RHONY (New York)",   color: "#34D399",
+        blurb: "Fast-talking hustle and legacy vibes." },
+      { key: "bh",    label: "RHOBH (Beverly Hills)", color: "#60A5FA",
+        blurb: "High-gloss glam, diamonds, and drama." },
+      { key: "nj",    label: "RHONJ (New Jersey)", color: "#F472B6",
+        blurb: "Family first, feud second; passionate and direct." },
+      { key: "potomac", label: "RHOP (Potomac)",   color: "#A78BFA",
+        blurb: "Etiquette with an edge; refined reads, surgical shade." },
+      { key: "slc",   label: "RHOSLC (Salt Lake City)", color: "#67E8F9",
+        blurb: "Snow-globe serenity with simmering tea and X-factor." },
+      { key: "miami", label: "RHOM (Miami)",       color: "#F87171",
+        blurb: "Tropical luxe, high heat, main-character energy." },
+      { key: "oc",    label: "RHOC (Orange County)", color: "#F59E0B",
+        blurb: "Sun-kissed OG energy; Pilates at 9, petty at 10." },
+    ];
+
+    // Weight table: each row must sum ≈ 1.0
+    const W = {
+      atl:     { comedy:.25, chemistry:.25, drama:.20, xfactor:.15, fashion:.10, lifestyle:.05 },
+      nyc:     { comedy:.20, chemistry:.25, drama:.15, xfactor:.15, fashion:.10, lifestyle:.15 },
+      bh:      { comedy:.10, chemistry:.10, drama:.15, xfactor:.20, fashion:.25, lifestyle:.20 },
+      nj:      { comedy:.15, chemistry:.20, drama:.25, xfactor:.20, fashion:.10, lifestyle:.10 },
+      potomac: { comedy:.20, chemistry:.15, drama:.20, xfactor:.20, fashion:.15, lifestyle:.10 },
+      slc:     { comedy:.10, chemistry:.10, drama:.25, xfactor:.25, fashion:.15, lifestyle:.15 },
+      miami:   { comedy:.10, chemistry:.15, drama:.15, xfactor:.20, fashion:.20, lifestyle:.20 },
+      oc:      { comedy:.15, chemistry:.20, drama:.15, xfactor:.15, fashion:.15, lifestyle:.20 },
+    };
+
+    // If you truly want outputs in 0–10, set this to true to map the 1–10 sliders to 0–10 internally.
+    const NORMALIZE_ZERO_TO_TEN = false;
+
+    // ======= UI BOOT =======
+    const ids = ["comedy","chemistry","drama","xfactor","fashion","lifestyle"];
+    const sliders = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
+    const nums    = Object.fromEntries(ids.map(id => [id, document.getElementById(id+"Num")]));
+
+    // Franchise pills
+    const pills = FRANCHISES.map(f => `<span class="pill">${f.label}</span>`).join("");
+    document.getElementById("franchisePills").innerHTML = pills;
+
+    // Bind range <-> number sync
+    for (const id of ids) {
+      sliders[id].addEventListener("input", () => { nums[id].value = sliders[id].value; compute(); });
+      nums[id].addEventListener("input", () => {
+        let v = Math.max(1, Math.min(10, Number(nums[id].value || 1)));
+        nums[id].value = v; sliders[id].value = v; compute();
+      });
+    }
+
+    // Reset + Share
+    document.getElementById("resetBtn").onclick = () => {
+      for (const id of ids) { sliders[id].value = 5; nums[id].value = 5; }
+      compute();
+    };
+    document.getElementById("shareBtn").onclick = () => {
+      const link = buildShareLink();
+      navigator.clipboard.writeText(link).then(() => alert("Link copied to clipboard!"));
+    };
+
+    // Load from URL (q param: base64 json of values)
+    const pre = loadFromUrl();
+    if (pre) {
+      for (const id of ids) {
+        if (pre[id] != null) {
+          const v = String(pre[id]);
+          sliders[id].value = v; nums[id].value = v;
+        }
+      }
+    }
+    compute(); // initial render
+
+    // ======= CORE =======
+    function getValues() {
+      const vals = Object.fromEntries(ids.map(id => [id, Number(sliders[id].value)]));
+      if (!NORMALIZE_ZERO_TO_TEN) return vals;
+
+      // map 1..10 → 0..10
+      for (const k of Object.keys(vals)) vals[k] = Math.round(((vals[k]-1)/9)*10*10)/10;
+      return vals;
+    }
+
+    function score(values) {
+      // returns array of {key,label,color,score}
+      const rows = [];
+      for (const f of FRANCHISES) {
+        const w = W[f.key];
+        const s =
+          values.comedy    * w.comedy +
+          values.chemistry * w.chemistry +
+          values.drama     * w.drama +
+          values.xfactor   * w.xfactor +
+          values.fashion   * w.fashion +
+          values.lifestyle * w.lifestyle;
+        // round to 2 decimals for display
+        rows.push({ key:f.key, label:f.label, color:f.color, blurb:f.blurb, score: Math.round(s*100)/100 });
+      }
+      rows.sort((a,b)=> b.score - a.score);
+      return rows;
+    }
+
+    function compute() {
+      const values = getValues();
+      const rows = score(values);
+
+      // Headline
+      if (rows.length) {
+        const top = rows[0];
+        document.getElementById("headline").innerHTML =
+          `Top match: <span class="badge" style="border-color:${top.color}; color:${top.color}">${top.label}</span> — ${top.score}`;
+        document.getElementById("subcopy").textContent = top.blurb || "";
+      }
+
+      // Bars
+      const maxScore = Math.max(...rows.map(r=>r.score)) || 10;
+      const bars = rows.map(r => {
+        const pct = Math.round((r.score / maxScore) * 100);
+        return `
+          <div class="bar">
+            <div class="barlabel">
+              <span>${r.label}</span>
+              <span>${r.score}</span>
+            </div>
+            <div class="track">
+              <div class="fill" style="width:${pct}%; background:${r.color}"></div>
+            </div>
+          </div>
+        `;
+      }).join("");
+      document.getElementById("bars").innerHTML = bars;
+
+      // Top 3 table
+      const top3 = rows.slice(0,3).map((r,i)=>`
+        <tr>
+          <td style="width:32px">${i+1}</td>
+          <td>${r.label}</td>
+          <td style="text-align:right">${r.score}</td>
+        </tr>
+      `).join("");
+      document.getElementById("top3").innerHTML =
+        `<tr><th>#</th><th>Franchise</th><th style="text-align:right">Score</th></tr>${top3}`;
+
+      // update URL silently
+      const url = new URL(window.location);
+      url.searchParams.set("q", encode(values));
+      window.history.replaceState({}, "", url);
+    }
+
+    function encode(obj){
+      return btoa(encodeURIComponent(JSON.stringify(obj)));
+    }
+    function decode(str){
+      try { return JSON.parse(decodeURIComponent(atob(str))); } catch(e){ return null; }
+    }
+    function buildShareLink(){
+      const url = new URL(window.location.href);
+      url.searchParams.set("q", encode(getValues()));
+      return url.toString();
+    }
+    function loadFromUrl(){
+      const q = new URLSearchParams(window.location.search).get("q");
+      return q ? decode(q) : null;
+    }
+  </script>
+</body>
+</html>
